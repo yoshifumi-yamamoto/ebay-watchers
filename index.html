@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+     <form>
+      <p>
+        ファイル：<input type="file" name="file" onchange="fileChange(this)" />
+      </p>
+      <script>
+        function fileChange(e){
+          if (e.files[0]['type'].indexOf('csv') !== -1 && e.files[0]['size'] < 1000000) {
+            e.parentNode.parentNode.send.disabled = false;
+          } else {
+            alert('適切なファイルをアップロードしてください。');
+            e.value = '';
+          }
+        }
+
+        function sendData(e){
+          e.disabled = true;
+          google.script.run.sendForm(e.parentNode);
+        }
+      </script>
+      <button type="button" onclick="sendData(this)" disabled=true name="send">
+        ファイルをアップロードする
+      </button>
+    </form>
+  </body>
+</html>
