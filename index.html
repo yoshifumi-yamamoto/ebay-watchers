@@ -2,28 +2,36 @@
 <html>
   <head>
     <base target="_top">
+    <script>
+      // Prevent forms from submitting.
+      function preventFormSubmit() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].addEventListener('submit', function(event) {
+            event.preventDefault();
+          });
+        }
+      }
+      window.addEventListener('load', preventFormSubmit);
+
+      function handleSubmit(formObject){
+        google.script.run
+          .withSuccessHandler(google.script.host.close)
+          .withFailureHandler(function () {
+            alert('アップロードに失敗しました');
+            google.script.host.close();
+        })
+          .sendForm(formObject);
+      }
+    </script>
   </head>
   <body>
-     <form>
+     <form id="myForm" onsubmit="handleSubmit(this)" enctype="multipart/form-data">
       <p>
-        ファイル：<input type="file" name="file" onchange="fileChange(this)" />
+        ファイル：<input id="file" type="file" name="myFile" />
       </p>
-      <script>
-        function fileChange(e){
-          if (e.files[0]['type'].indexOf('csv') !== -1 && e.files[0]['size'] < 1000000) {
-            e.parentNode.parentNode.send.disabled = false;
-          } else {
-            alert('適切なファイルをアップロードしてください。');
-            e.value = '';
-          }
-        }
-
-        function sendData(e){
-          e.disabled = true;
-          google.script.run.sendForm(e.parentNode);
-        }
-      </script>
-      <button type="button" onclick="sendData(this)" disabled=true name="send">
+      
+      <button type="submit" name="send">
         ファイルをアップロードする
       </button>
     </form>
