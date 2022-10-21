@@ -38,6 +38,14 @@ function sendForm(formObject) {
   const csvText = blob.getDataAsString("MS932");
   const values = Utilities.parseCsv(csvText);
 
+  // アップロードするファイル名を取得
+  const fileName = blob.getName()
+
+  // ファイル名にunsoldが含まれていたらUnsoldシートに出力する
+  if(fileName.indexOf('unsold') !== -1) {
+    SHEET_NAME = 'Unsold'
+  }
+
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getSheetByName(SHEET_NAME);
 
@@ -53,7 +61,7 @@ function sendForm(formObject) {
   const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,4999,1).getValues();
 
   // リサーチ担当列全取得
-  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,31,4999,1).getValues();
+  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,4999,1).getValues();
 
 
   // 二次元配列を一次元配列に変換
