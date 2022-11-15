@@ -35,7 +35,7 @@ function sendForm(formObject) {
   
   // フォームから受け取ったcsvデータ
   const blob = formObject.myFile;
-  const csvText = blob.getDataAsString("MS932");
+  const csvText = blob.getDataAsString();
   const values = Utilities.parseCsv(csvText);
 
   // アップロードするファイル名を取得
