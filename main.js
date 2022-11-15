@@ -1,17 +1,8 @@
 var SHEET_NAME = 'Active' // 出力するシート名
 var RC_ROW = 4;     // 作成フォームのレコード開始行
 var RC_COL = 2;      // 作成フォームのレコード開始列
-var SETTINGS = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('設定') // 設定シート情報
-var RESEARCHER_GET_SHEET_ID = SETTINGS.getRange('D3').getDisplayValue() // リサーチ者を参照するシートのID
-// var ITEMS = SETTINGS.getRange(3, 2, 4).getValues() // 必要な項目
 // flatがうまくいかないので固定で対応（後日対応予定）
 var ITEMS = ['Title', 'Custom label (SKU)', 'Start date','eBay category 1 name',  'Watchers']
-
-var LABELS = SETTINGS.getRange(3, 3, 4).getValues() // 項目のラベル
-var samples = ['Item number', 'Title', 'Variation details', 'Custom label (SKU)', 'Available quantity', 'Format', 'Currency', 'Start price', 'Auction Buy It Now price', 'Reserve price', 'Current price', 'Sold quantity', 'Views (future)', 'Watchers', 'Bids', 'Start date', 'End date', 'eBay category 1 name', 'eBay category 1 number', 'eBay category 2 name', 'eBay category 2 number', 'Condition', 'eBay Product ID(ePID)', 'Listing site', 'P:UPC', 'P:EAN', 'P:ISBN']
-
-
-// var DATA = [['Item number', 'Title', 'Variation details', 'Custom label (SKU)', 'Available quantity', 'Format', 'Currency', 'Start price', 'Auction Buy It Now price', 'Reserve price', 'Current price', 'Sold quantity', 'Views (future)', 'Watchers', 'Bids', 'Start date', 'End date', 'eBay category 1 name', 'eBay category 1 number', 'eBay category 2 name', 'eBay category 2 number', 'Condition', 'eBay Product ID(ePID)', 'Listing site', 'P:UPC', 'P:EAN', 'P:ISBN'], [353847193474, 'JoJo,s Bizarre Adventure All Star Battle PS3 Japanese version Used', , 'B00BHAF688', 3, 'FIXED_PRICE', 'USD', 25.74, , , 25.74, 1, , 2, , 'Jan-07-22 19:09:09 PST', 'Oct-07-22 20:09:09 PDT', 'Video Games', 139973, , , 'VERY_GOOD', , 'US', , , ], [353864972609, 'Street Fighter Collection Playstation 1 PS1 Sony Japan Capcom 1997 Japanese used', , 'B000069TD7', 1, 'FIXED_PRICE', 'USD', '38.61', , , '38.61', 0, , 9, , 'Jan-19-22 00:57:23 PST', 'Oct-19-22 01:57:23 PDT', 'Video Games', 139973, , , 'GOOD', , 'US', , , ]]
 
 // モーダルを開く
 function showModal() {
@@ -35,7 +26,7 @@ function sendForm(formObject) {
   
   // フォームから受け取ったcsvデータ
   const blob = formObject.myFile;
-  const csvText = blob.getDataAsString("MS932");
+  const csvText = blob.getDataAsString();
   const values = Utilities.parseCsv(csvText);
 
   // アップロードするファイル名を取得
@@ -48,30 +39,6 @@ function sendForm(formObject) {
 
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getSheetByName(SHEET_NAME);
-
-  // リサーチ担当を取得するシートを取得
-  const researcherGetSheet = SpreadsheetApp.openById(RESEARCHER_GET_SHEET_ID)
-
-  //データがある最終列を取得（上手くいってない）
-  const lastCol = researcherGetSheet.getLastColumn();
-  console.log('lastCol')
-  console.log(lastCol)
-
-  // SKU列全取得
-  const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,4999,1).getValues();
-
-  // リサーチ担当列全取得
-  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,4999,1).getValues();
-
-
-  // 二次元配列を一次元配列に変換
-  const formattedSkus = skus.reduce(function (acc, cur) {
-    return acc.concat(cur);
-  });
-  
-  const formattedResearchers = researchers.reduce(function (acc, cur) {
-    return acc.concat(cur);
-  });
 
   // 必要な項目のインデックスを取得
   const indexs = ITEMS.map(function (item) {
@@ -89,8 +56,6 @@ function sendForm(formObject) {
     
     // watcherがある場合のみaddValuesに追加する
     if(fiteredValues[4] !== '0' && fiteredValues[4] !== '' && fiteredValues[4] !== undefined){
-      const skuIndex = formattedSkus.indexOf(fiteredValues[1])
-      fiteredValues.push(formattedResearchers[skuIndex])
       addValues.push(fiteredValues)
     }
   })
