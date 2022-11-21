@@ -58,10 +58,10 @@ function sendForm(formObject) {
   console.log(lastCol)
 
   // SKU列全取得
-  const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,4999,1).getValues();
+  const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,5999,1).getValues();
 
   // リサーチ担当列全取得
-  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,4999,1).getValues();
+  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,5999,1).getValues();
 
 
   // 二次元配列を一次元配列に変換
