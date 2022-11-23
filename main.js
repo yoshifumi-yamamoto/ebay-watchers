@@ -5,8 +5,8 @@ var SETTINGS = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('設定') //
 var RESEARCHER_GET_SHEET_ID = SETTINGS.getRange('D3').getDisplayValue() // リサーチ者を参照するシートのID
 // var ITEMS = SETTINGS.getRange(3, 2, 4).getValues() // 必要な項目
 // flatがうまくいかないので固定で対応（後日対応予定）
-var ITEMS = ['Title', 'Custom label (SKU)', 'Start date','eBay category 1 name',  'Watchers']
-
+// var ITEMS = ['Title', 'Custom label (SKU)', 'Start date','eBay category 1 name',  'Watchers']
+var ITEMS = ['Title', 'Custom label (SKU)', 'Item number', 'Start date','eBay category 1 name',  'Watchers', 'Available quantity' ]
 var LABELS = SETTINGS.getRange(3, 3, 4).getValues() // 項目のラベル
 var samples = ['Item number', 'Title', 'Variation details', 'Custom label (SKU)', 'Available quantity', 'Format', 'Currency', 'Start price', 'Auction Buy It Now price', 'Reserve price', 'Current price', 'Sold quantity', 'Views (future)', 'Watchers', 'Bids', 'Start date', 'End date', 'eBay category 1 name', 'eBay category 1 number', 'eBay category 2 name', 'eBay category 2 number', 'Condition', 'eBay Product ID(ePID)', 'Listing site', 'P:UPC', 'P:EAN', 'P:ISBN']
 
@@ -59,6 +59,8 @@ function sendForm(formObject) {
 
   // SKU列全取得
   const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,5999,1).getValues();
+  // ebayURL列全取得
+  const ebayURLs = researcherGetSheet.getSheetByName("出品 年月").getRange(2,12,5999,1).getValues();
 
   // リサーチ担当列全取得
   const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,5999,1).getValues();
@@ -68,30 +70,49 @@ function sendForm(formObject) {
   const formattedSkus = skus.reduce(function (acc, cur) {
     return acc.concat(cur);
   });
+
+  const formattedEbayURLs = ebayURLs.reduce(function (acc, cur, i) {
+    return acc.concat(cur);
+  });
   
   const formattedResearchers = researchers.reduce(function (acc, cur) {
     return acc.concat(cur);
   });
 
   // 必要な項目のインデックスを取得
-  const indexs = ITEMS.map(function (item) {
-    return values[0].indexOf(item)
-  })
-
+  // const indexs = ITEMS.map(function (item) {
+  //   // console.log({item:item})
+  //   // console.log(typeof(item))
+  //   // console.log(values[0][0])
+  //   // console.log(typeof(values[0][0]))
+  //   // console.log(item ===values[0][0])
+  //   var result =values[0][0].match(item) 
+  //   console.log({result:result})
+  //   return values[0].findIndex(function(e){e===item})
+  // })
+  // console.log({indexs:indexs})
+  // 一旦固定　要修正
+  const indexes = [1, 3, 0, 15, 17, 13, 4]
   // 2次元配列に整形
   var addValues = []
   // １行目は項目名なのでsliceで排除
   values.slice(1).map(function (value){
     // 必要な項目の値のみ抽出
-    const fiteredValues = indexs.map(function (index) {
-      return value[index]
+    const filteredValues = indexes.map(function (index) {
+      if(index === 0){
+        return 'https://www.ebay.com/itm/' + value[index]
+      }
+      else{
+        return value[index]
+      }
     })
     
     // watcherがある場合のみaddValuesに追加する
-    if(fiteredValues[4] !== '0' && fiteredValues[4] !== '' && fiteredValues[4] !== undefined){
-      const skuIndex = formattedSkus.indexOf(fiteredValues[1])
-      fiteredValues.push(formattedResearchers[skuIndex])
-      addValues.push(fiteredValues)
+    if(filteredValues[5] !== '0' && filteredValues[5] !== '' && filteredValues[5] !== undefined){
+      console.log(formattedEbayURLs)
+      const ebayURLndex = formattedEbayURLs.indexOf(filteredValues[2])
+      filteredValues.push(formattedResearchers[ebayURLndex])
+      addValues.push(filteredValues)
     }
   })
 
