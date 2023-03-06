@@ -15,17 +15,25 @@
       window.addEventListener('load', preventFormSubmit);
 
       function handleSubmit(formObject){
+        document.getElementById("loading").style.display = "block"
         google.script.run
-          .withSuccessHandler(google.script.host.close)
+          .withSuccessHandler(function(){
+            google.script.host.close()
+            document.getElementById("loading").style.display = "none"
+          })
           .withFailureHandler(function () {
             alert('アップロードに失敗しました');
             google.script.host.close();
+            document.getElementById("loading").style.display = "none"
         })
           .sendForm(formObject);
       }
     </script>
   </head>
   <body>
+     <div id="loading" class="loading">
+      <div class="circle"></div>
+     </div>
      <form id="myForm" onsubmit="handleSubmit(this)" enctype="multipart/form-data">
       <p>
         ファイル：<input id="file" type="file" name="myFile" />
@@ -36,4 +44,38 @@
       </button>
     </form>
   </body>
+  <style>
+    .loading {
+      background-color: black;
+      opacity: 0.6;
+      position: absolute;
+      width: 400px;
+      height: 200px;
+      top: 0px;
+      left: 0px;
+      display: none;
+    }
+
+    .circle{
+      width:100px;
+      height:100px;
+      border-radius:150px;
+      border:15px solid #fff;
+      border-top-color:rgba(0,0,0,0.3);
+      box-sizing:border-box;
+      position:absolute;
+      top:20%;
+      left:35%;
+      animation:circle 1s linear infinite;
+      -webkit-animation:circle 1s linear infinite;
+    }
+    @keyframes circle{
+      0%{transform:rotate(0deg)}
+      100%{transform:rotate(360deg)}
+    }
+    @-webkit-keyframes circle{
+      0%{-webkit-transform:rotate(0deg)}
+      100%{-webkit-transform:rotate(360deg)}
+    }
+  </style>
 </html>
