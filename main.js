@@ -58,12 +58,12 @@ function sendForm(formObject) {
   console.log(lastCol)
 
   // SKU列全取得
-  const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,5999,1).getValues();
+  const skus = researcherGetSheet.getSheetByName("出品 年月").getRange(1,4,9999,1).getValues();
   // ebayURL列全取得
-  const ebayURLs = researcherGetSheet.getSheetByName("出品 年月").getRange(2,12,5999,1).getValues();
+  const ebayURLs = researcherGetSheet.getSheetByName("出品 年月").getRange(2,12,9999,1).getValues();
 
   // リサーチ担当列全取得
-  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,5999,1).getValues();
+  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(1,30,9999,1).getValues();
 
 
   // 二次元配列を一次元配列に変換
@@ -109,7 +109,6 @@ function sendForm(formObject) {
     
     // watcherがある場合のみaddValuesに追加する
     if(filteredValues[5] !== '0' && filteredValues[5] !== '' && filteredValues[5] !== undefined){
-      console.log(formattedEbayURLs)
       const ebayURLndex = formattedEbayURLs.indexOf(filteredValues[2])
       filteredValues.push(formattedResearchers[ebayURLndex])
       addValues.push(filteredValues)
