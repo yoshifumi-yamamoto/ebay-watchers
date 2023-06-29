@@ -52,7 +52,7 @@ function sendForm(formObject) {
   const ebayURLs = researcherGetSheet.getSheetByName("出品 年月").getRange(2,12,20000,1).getValues();
 
   // リサーチ担当列全取得
-  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(2,30,20000,1).getValues();
+  const researchers = researcherGetSheet.getSheetByName("出品 年月").getRange(2,31,20000,1).getValues();
 
 
   // 二次元配列を一次元配列に変換
